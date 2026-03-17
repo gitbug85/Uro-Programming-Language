@@ -1,0 +1,23 @@
+# --- Documentation ---
+/docs/
+
+# --- Foreign cache (keep directory, ignore contents) ---
+/foreign-cache/*
+!/foreign-cache/
+!/foreign-cache/.gitkeep
+
+# --- Local cache (keep directory, ignore contents) ---
+/local-cache/*
+!/local-cache/
+!/local-cache/.gitkeep
+
+# --- IDE (Visual Studio) ---
+.vs/
+
+# --- Python version management ---
+.python-version
+
+# --- Python bytecode ---
+__pycache__/
+*.py[cod]
+*$py.class
