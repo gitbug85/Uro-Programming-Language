@@ -98,7 +98,7 @@ class CodeGenerator:
                         self.main_builder.store(val, ptr)
 
                         # Track the data for future reference
-                        self.main_pointers[node.arguments[0].value] = [ptr, Nd.Integer(32, 0).name, [False] * 9]
+                        self.main_pointers[node.arguments[0].value] = [ptr, node.identifier.value, node.identifier]
                 if node.identifier.value == "_write":
                     if len(node.arguments) == 1:
                         identifier = node.arguments[0].value
@@ -114,12 +114,18 @@ class CodeGenerator:
             return
 
         if node.identifier in self.main_pointers:
-            ptr = self.main_pointers[node.identifier][0] # First element being the pointer
+            data = self.main_pointers[node.identifier]
+            ptr = data[0] # First element being the pointer
+            origin_node = data[2]
+            origin_attributes = origin_node.attributes
+
+            if origin_attributes[1]:
+                value = self.value_generator.make_dynamic(value, origin_node.value, self.main_builder, self.main_pointers)
 
             # Store the value
             self.main_builder.store(value, ptr)
-        else: # The varaible has not been assigned before
-            if not node.attributes[1]:
+        else: # The variable has not been assigned before
+            if node.attributes[1]:
                 value = self.value_generator.make_dynamic(value, initializer, self.main_builder, self.main_pointers)
 
             # Global assignment
@@ -133,4 +139,4 @@ class CodeGenerator:
             self.main_builder.store(value, ptr)
 
             # Track the data for future reference
-            self.main_pointers[node.identifier] = [ptr, initializer.name, node.attributes] # Initializer name is stored for use in signed vs unsigned integers
+            self.main_pointers[node.identifier] = [ptr, initializer.name, node] # Initializer name is stored for use in signed vs unsigned integers

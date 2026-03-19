@@ -85,13 +85,15 @@ class Parser:
         8. Access from members?
         9. Sync or async?
         """
-        keymods = [False] * 9
+        keymods = [True] * 3
+        for _ in range(6):
+            keymods.append(False)
         tok = self.current()
 
         if tok.ty == TokTy.let:
-            keymods[0] = True
-            keymods[1] = True
-            keymods[2] = True
+            keymods[0] = False
+            keymods[1] = False
+            keymods[2] = False
             self.advance()
             return keymods
 
@@ -114,7 +116,7 @@ class Parser:
 
             last = order[tok.ty]
 
-            keymods[order[tok.ty]] = True
+            keymods[order[tok.ty]] = False
             self.advance()
 
         return keymods
