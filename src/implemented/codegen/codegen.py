@@ -8,6 +8,7 @@ from .values import ValueGenerator
 from .globals import GlobalManager
 from .operations import OperationGenerator
 from .builtins import BuiltInBuilder
+import scope_data
 
 class CodeGenerator:
     def __init__(self, ast: Nd.Module, module: ir.Module):
@@ -139,4 +140,4 @@ class CodeGenerator:
             self.main_builder.store(value, ptr)
 
             # Track the data for future reference
-            self.main_pointers[node.identifier] = [ptr, initializer.name, node] # Initializer name is stored for use in signed vs unsigned integers
+            self.main_pointers[node.identifier] = [ptr, initializer.name, node] # Initializer name is stored for use in signed vs unsigned integers ([ptr, initializer.name, node])

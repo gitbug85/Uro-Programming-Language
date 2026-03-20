@@ -75,15 +75,15 @@ class Parser:
 
     def parse_keymods(self):
         """
-        1. Can change type?
-        2. Can change subtype?
-        3. Can change literal?
-        4. Carries over keymods into function?
-        5. Immutable forever?
-        6. Global or local?
-        7. Access from outside?
-        8. Access from members?
-        9. Sync or async?
+        1. Can change type? A
+        2. Can change subtype? A
+        3. Can change literal? A
+        4. Carries over keymods into function? D
+        5. Immutable forever? A D (Const or init)
+        6. Global or local? A D
+        7. Access from outside? D
+        8. Access from members? D
+        9. Sync or async? D
         """
         keymods = [True] * 3
         for _ in range(6):

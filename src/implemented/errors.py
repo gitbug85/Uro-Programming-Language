@@ -13,7 +13,7 @@ class ErrorType(Enum):
     NAME = "NameError"
     SEMANTIC = "SemanticError"
     INTERNAL = "InternalError"
-    CONVENTION = "ConventionError"
+    CASE = "CaseError"
 
 class Error:
     def __init__(
@@ -35,7 +35,7 @@ class Report:
     def case(self, file: str, line: int, column: int, length: int):
         message = "Wrong case!"
         position = SourcePosition(file, line, column, length)
-        error_type = ErrorType.CONVENTION
+        error_type = ErrorType.CASE
         error = Error(message, position, error_type)
         self.error_manager.errors.append(error)
 
@@ -45,4 +45,4 @@ class ErrorManager:
         self.report = Report(self)
 
     def has_errors(self) -> bool:
-        return any(error.error_type != ErrorType.CONVENTION for error in self.errors)
+        return any(error.error_type != ErrorType.CASE for error in self.errors)
