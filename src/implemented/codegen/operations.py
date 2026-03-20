@@ -10,7 +10,7 @@ class OperationGenerator:
 
         def resolve_operand(operand):
             if isinstance(operand, Nd.Identifier):
-                var_ptr = pointers[operand.value][0]
+                var_ptr = pointers[operand.value].ptr
 
                 # Load the value which is either a dynamic type or a integer value
                 dyn_struct_or_int = builder.load(var_ptr, name=f"{operand.value}.dynorintval")

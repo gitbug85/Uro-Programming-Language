@@ -8,7 +8,7 @@ from .values import ValueGenerator
 from .globals import GlobalManager
 from .operations import OperationGenerator
 from .builtins import BuiltInBuilder
-import scope_data
+from .scope_data import AssignRefData
 
 class CodeGenerator:
     def __init__(self, ast: Nd.Module, module: ir.Module):
@@ -99,11 +99,11 @@ class CodeGenerator:
                         self.main_builder.store(val, ptr)
 
                         # Track the data for future reference
-                        self.main_pointers[node.arguments[0].value] = [ptr, node.identifier.value, node.identifier]
+                        self.main_pointers[node.arguments[0].value] = AssignRefData(ptr, node.identifier.value, Nd.Assignment([False] * 9, Nd.Identifier(node.identifier.value), Nd.Pass()))
                 if node.identifier.value == "_write":
                     if len(node.arguments) == 1:
                         identifier = node.arguments[0].value
-                        val = self.main_builder.load(self.main_pointers[identifier][0], "write")
+                        val = self.main_builder.load(self.main_pointers[identifier].ptr, "write")
                         byte = self.main_builder.trunc(val, self.rttypes.i32)
                         self.main_builder.call(self.built_in_builder.write_byte, [byte])
 
@@ -115,9 +115,9 @@ class CodeGenerator:
             return
 
         if node.identifier in self.main_pointers:
-            data = self.main_pointers[node.identifier]
-            ptr = data[0] # First element being the pointer
-            origin_node = data[2]
+            sco_data = self.main_pointers[node.identifier]
+            ptr = sco_data.ptr # First element being the pointer
+            origin_node = sco_data.node
             origin_attributes = origin_node.attributes
 
             if origin_attributes[1]:
@@ -140,4 +140,4 @@ class CodeGenerator:
             self.main_builder.store(value, ptr)
 
             # Track the data for future reference
-            self.main_pointers[node.identifier] = [ptr, initializer.name, node] # Initializer name is stored for use in signed vs unsigned integers ([ptr, initializer.name, node])
+            self.main_pointers[node.identifier] = AssignRefData(ptr, initializer.name, node) # Initializer name is stored for use in signed vs unsigned integers ([ptr, initializer.name, node])
