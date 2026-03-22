@@ -41,7 +41,7 @@ class TokTy(Enum):
     intlit = auto()
     boollit = auto()
     binlit = auto()
-    wordlit = auto()
+    bytelit = auto()
     # Seperators & syntax
     lparen = auto()
     rparen = auto()
@@ -124,7 +124,7 @@ class Tokenizer:
             if lex[-2:] == "bi":
                 return Tok(TokTy.binlit, lex[:-2], ln)
             if lex[-2:] == "by":
-                return Tok(TokTy.wordlit, lex[:-2], ln)
+                return Tok(TokTy.bytelit, lex[:-2], ln)
 
         # Operators
         if lex in self.table:

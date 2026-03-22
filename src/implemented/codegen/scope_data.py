@@ -2,7 +2,7 @@ from enum import Enum
 import nodes as Nd
 
 """
-This class stores data used later on for the code generation and helps attributes in transition from the parser to code generation.
+This class stores data used later on for the code generation and helps keymods in transition from the parser to code generation.
 """
 
 class ScopeRefData:
@@ -14,13 +14,13 @@ class ScopeRefData:
 class AssignRefData(ScopeRefData):
     def __init__(self, ptr, ty: str, node: Nd.Node):
         super().__init__(ptr, ty, node)
-        self.attribs = node.attributes
+        self.attribs = node.keymods
         self.ident = node.identifier
 
 class DefRefData(ScopeRefData):
     def __init__(self, ptr, ty: str, node: Nd.Node):
         super().__init__(ptr, ty, node)
-        self.attribs = node.attributes
+        self.attribs = node.keymods
         self.ident = node.identifier
 
 class AssignAttribs():

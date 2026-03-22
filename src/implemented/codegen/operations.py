@@ -28,8 +28,8 @@ class OperationGenerator:
                 return self.generate_operation(operand, builder, pointers)
             elif isinstance(operand, Nd.Integer):
                 return self.value_generator.make_static(operand, "istat", pointers, builder)
-            elif isinstance(operand, Nd.Word):
-                return self.value_generator.make_static(operand, "wstat", pointers, builder)
+            elif isinstance(operand, Nd.Byte):
+                return self.value_generator.make_static(operand, "bstat", pointers, builder)
 
             raise NotImplementedError(f"Unsupported operand type: {type(operand)}")
 
@@ -80,8 +80,8 @@ class OperationGenerator:
                 val = builder.load(pointers[operand.value][0], name="ldvar")
                 newval = builder.not_(val, name="notw")
                 return newval
-            if isinstance(operand, Nd.Word):
-                val = self.value_generator.make_static(operand, "wstat", pointers, builder)
+            if isinstance(operand, Nd.Byte):
+                val = self.value_generator.make_static(operand, "bstat", pointers, builder)
                 newval = builder.not_(val, name="notw")
                 return newval
 

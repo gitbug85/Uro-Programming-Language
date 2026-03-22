@@ -9,16 +9,9 @@ class Module(Node):
         self.body = body
 
 class Assignment(Node):
-    def __init__(self, attributes: list[bool], identifier: Identifier, value: Node):
+    def __init__(self, keymods: list[bool], identifier: Identifier, value: Node):
         super().__init__("ASSIGNMENT")
-        """
-        Attributes:
-        1st: Global or local
-        2nd: Can change literal
-        3nd: Can change subtype
-        4th: Reference or owner
-        """
-        self.attributes = attributes
+        self.keymods = keymods
         self.identifier = identifier
         self.value = value
 
@@ -66,9 +59,9 @@ class Binary(Value):
         super().__init__("BINARY")
         self.value = value
 
-class Word(Value):
+class Byte(Value):
     def __init__(self, bit: int, value: str):
-        super().__init__("WORD")
+        super().__init__("BYTE")
         self.bit = bit
         self.value = value
 

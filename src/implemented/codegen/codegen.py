@@ -88,7 +88,7 @@ class CodeGenerator:
             if isinstance(node, Nd.Macro):
                 if node.identifier.value == "_byte":
                     if len(node.arguments) == 1:
-                        self.main_pointers[node.arguments[0].value][1] = Nd.Word("0", "0").name
+                        self.main_pointers[node.arguments[0].value][1] = Nd.Byte("0", "0").name
                 if node.identifier.value == "_int":
                     if len(node.arguments) == 1:
                         self.main_pointers[node.arguments[0].value][1] = Nd.Integer(32, 0).name
@@ -121,19 +121,19 @@ class CodeGenerator:
             sco_data = self.main_pointers[node.identifier]
             ptr = sco_data.ptr # First element being the pointer
             origin_node = sco_data.node
-            origin_attributes = origin_node.attributes
+            origin_keymods = origin_node.keymods
 
-            if origin_attributes[1]:
+            if origin_keymods[1]:
                 value = self.value_generator.make_dynamic(value, origin_node.value, self.main_builder, self.main_pointers)
 
             # Store the value
             self.main_builder.store(value, ptr)
         else: # The variable has not been assigned before
-            if node.attributes[1]:
+            if node.keymods[1]:
                 value = self.value_generator.make_dynamic(value, initializer_node, self.main_builder, self.main_pointers)
 
             # Global assignment
-            if node.attributes[5]:
+            if node.keymods[5]:
                 self.global_manager.create_and_store_global(ident_node, value)
                 return
 
