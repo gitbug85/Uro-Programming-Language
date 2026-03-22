@@ -21,6 +21,7 @@ Username |-> Desktop |-> Project
          | example.uro
 ```
 2. Project -> setups -> compiled and run whichever binary matches your OS.
+If that does not work enter Project -> setups -> nim and find the commands you need to run.
 
 ## **Commands**
 
