@@ -62,11 +62,13 @@ class CodeGenerator:
                 # Check if built-in first
                 if node.identifier.value == "print": # Integers for now
                     if isinstance(node.arguments[0], Nd.Identifier):
-                        val = self.value_generator.make_static(node.arguments[0], node.identifier.value, self.main_pointers, self.main_builder)
+                        ident_node = node.arguments[0]
+                        name = node.identifier.value
+                        val = self.get_static_value(ident_node, name)
                     else:
-                        val_bit = node.arguments[0].bit
-                        val_value = node.arguments[0].value
-                        val = self.value_generator.make_static(node.arguments[0], node.identifier, self.main_pointers, self.main_builder)
+                        int_node = node.arguments[0]
+                        ident_node = node.identifier
+                        val = self.get_static_value(int_node, ident_node)
                     self.main_builder.call(self.built_in_builder.print_int, [val])
                 
             if isinstance(node, Nd.If):
@@ -108,8 +110,9 @@ class CodeGenerator:
                         self.main_builder.call(self.built_in_builder.write_byte, [byte])
 
     def generate_assignment(self, node: Nd.Assignment):
-        initializer = node.value
-        value = self.value_generator.make_static(initializer, node.identifier, self.main_pointers, self.main_builder)
+        initializer_node = node.value
+        ident_node = node.identifier
+        value = self.get_static_value(initializer_node, ident_node)
 
         if value is None:
             return
@@ -127,17 +130,25 @@ class CodeGenerator:
             self.main_builder.store(value, ptr)
         else: # The variable has not been assigned before
             if node.attributes[1]:
-                value = self.value_generator.make_dynamic(value, initializer, self.main_builder, self.main_pointers)
+                value = self.value_generator.make_dynamic(value, initializer_node, self.main_builder, self.main_pointers)
 
             # Global assignment
             if node.attributes[5]:
-                self.global_manager.create_and_store_global(node.identifier, value)
+                self.global_manager.create_and_store_global(ident_node, value)
                 return
 
-            ptr = self.main_builder.alloca(value.type, name=node.identifier)
+            ptr = self.main_builder.alloca(value.type, name=ident_node)
 
             # Store the value
             self.main_builder.store(value, ptr)
 
             # Track the data for future reference
-            self.main_pointers[node.identifier] = AssignRefData(ptr, initializer.name, node) # Initializer name is stored for use in signed vs unsigned integers ([ptr, initializer.name, node])
+            self.main_pointers[ident_node] = AssignRefData(ptr, initializer_node.name, node) # Initializer name is stored for use in signed vs unsigned integers
+
+    def get_static_value(self, node, name):
+        return self.value_generator.make_static(
+            node,
+            name,
+            self.main_pointers,
+            self.main_builder
+        )

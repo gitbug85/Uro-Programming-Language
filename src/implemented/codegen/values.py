@@ -24,7 +24,7 @@ class ValueGenerator:
             val = self.operation_generator.genunop(node, builder, pointers)
             return val
         if isinstance(node, Nd.Identifier):
-            val = builder.load(pointers[node.value][0], name="ldvar")
+            val = builder.load(pointers[node.value].ptr, name="ldvar")
             return val
         if isinstance(node, Nd.Call):
             if node.identifier == "i":

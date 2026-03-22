@@ -32,6 +32,6 @@ class AssignAttribs():
 
 class DefAttribs():
     def __init__(self):
-        self.safe = False # Cannot change anything in this definition
+        self.sync = True
         self.chilac = True # Child access: means the thing this definition owns can access it
         self.parac = True #  Parrent access: means the thing that owns this definition can access it
