@@ -6,7 +6,7 @@ import std/strformat
 # Linux-only: assumes POSIX layout
 proc getPythonPath(project: string): string =
   # Virtualenv Python path on Linux
-  result = project / "venv" / "bin" / "python"
+  result = project / "venv" / "bin" / "python3.14"
 
 proc runPythonCompile(allFlag: bool, recursive: bool, files: seq[string]) =
   let exePath = getAppFilename()
@@ -28,7 +28,7 @@ proc runPythonCompile(allFlag: bool, recursive: bool, files: seq[string]) =
   let pythonPath = getPythonPath(project)
 
   # Force POSIX-style absolute path (Linux-safe)
-  let fullPythonPath = pythonPath.expandFilename()
+  let fullPythonPath = pythonPath.absolutePath()
 
   echo fmt"Using Python path: {fullPythonPath}"
 
