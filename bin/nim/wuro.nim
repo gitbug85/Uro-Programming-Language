@@ -4,9 +4,10 @@ import osproc
 import std/strformat
 
 proc runPythonCompile(allFlag: bool, recursive: bool, files: seq[string]) =
-  let current = getCurrentDir()
-  let project = current.parentDir().parentDir()
-  let compilerPath = project/"src/implemented/compiler.py"
+  let exePath = getAppFilename()
+  let exeDir = exePath.parentDir()
+  let project = exeDir.parentDir().parentDir()
+  let compilerPath = project / "src" / "implemented" / "compiler.py"
   
   var args: seq[string] = @[compilerPath, "comp"]
 
