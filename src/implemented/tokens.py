@@ -39,8 +39,8 @@ class TokTy(Enum):
     uroasync = auto()
     # Literals
     intlit = auto()
+    uintlit = auto()
     boollit = auto()
-    binlit = auto()
     bytelit = auto()
     # Seperators & syntax
     lparen = auto()
@@ -120,9 +120,9 @@ class Tokenizer:
             return Tok(TokTy.intlit, int(lex), ln)
 
         # Literal using postfix
-        if lex[:-2].isdigit():
-            if lex[-2:] == "bi":
-                return Tok(TokTy.binlit, lex[:-2], ln)
+        if lex[:-1].isdigit():
+            if lex[-1:] == "u":
+                return Tok(TokTy.uintlit, lex[:-1], ln)
             if lex[-2:] == "by":
                 return Tok(TokTy.bytelit, lex[:-2], ln)
 

@@ -203,9 +203,9 @@ class Parser:
         if tok.ty == TokTy.boollit:
             tok = self.advance()
             return Nd.Boolean(tok.lit)
-        if tok.ty == TokTy.binlit:
+        if tok.ty == TokTy.uintlit:
             tok = self.advance()
-            return Nd.Binary(tok.lit)
+            return Nd.UnsignedInteger(32, tok.lit)
         if tok.ty == TokTy.bytelit:
             tok = self.advance()
             return Nd.Byte(32, tok.lit)

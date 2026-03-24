@@ -27,40 +27,48 @@ class OperationGenerator:
             elif isinstance(operand, Nd.BinaryOperator):
                 return self.generate_operation(operand, builder, pointers)
             elif isinstance(operand, Nd.Integer):
-                return self.value_generator.make_static(operand, "istat", pointers, builder)
+                return self.value_generator.make_static(operand, "sistat", pointers, builder)
+            elif isinstance(operand, Nd.UnsignedInteger):
+                return self.value_generator.make_static(operand, "uistat", pointers, builder)
             elif isinstance(operand, Nd.Byte):
-                return self.value_generator.make_static(operand, "bstat", pointers, builder)
+                return self.value_generator.make_static(operand, "sbstat", pointers, builder)
 
             raise NotImplementedError(f"Unsupported operand type: {type(operand)}")
 
         left_value = resolve_operand(node.left)
         right_value = resolve_operand(node.right)
 
+        ORDER = { # Rule left type wins means the type on the left is the type that the right one may convert to
+            ("si", "ui", "=="): lambda l, r: builder.icmp_signed('==', l, r, "cmp"),
+            ("ui", "si", "=="): lambda l, r: builder.icmp_unsigned('==', l, r, "cmp")
+            
+        }
+
         if left_value.type != right_value.type:
             raise TypeError("Type mismatch in binary operation" + left_value.type.intrinsic_name + right_value.type.intrinsic_name)
             
         if node.op == TokTy.plus:
-            return builder.add(left_value, right_value, "result")
+            return builder.add(left_value, right_value, "result") # Ag
         elif node.op == TokTy.minus:
-            return builder.sub(left_value, right_value, "result")
+            return builder.sub(left_value, right_value, "result") # Ag
         elif node.op == TokTy.times:
-            return builder.mul(left_value, right_value, "result")
+            return builder.mul(left_value, right_value, "result") # Ag
         elif node.op == TokTy.divide:
-            return builder.sdiv(left_value, right_value, "result")
+            return builder.sdiv(left_value, right_value, "result") # Sn
         elif node.op == TokTy.doubequal:
-            return builder.icmp_signed('==', left_value, right_value, "cmp")
+            return builder.icmp_signed('==', left_value, right_value, "cmp") # Sn
         elif node.op == TokTy.bitwand:
-            return builder.and_(left_value, right_value, "result")
+            return builder.and_(left_value, right_value, "result") # Ag
         elif node.op == TokTy.bitwor:
-            return builder.or_(left_value, right_value, "result")
+            return builder.or_(left_value, right_value, "result") # Ag
         elif node.op == TokTy.bitwxor:
-            return builder.xor(left_value, right_value, "result")
+            return builder.xor(left_value, right_value, "result") # Ag
         elif node.op == TokTy.bitwnot:
-            return builder.not_(left_value, "result")
+            return builder.not_(left_value, "result") # Ag
         elif node.op == TokTy.lshift:
-            return builder.shl(left_value, right_value, "result")
+            return builder.shl(left_value, right_value, "result") # Ag
         elif node.op == TokTy.rshift:
-            return builder.ashr(left_value, right_value, "result")  # Signed
+            return builder.ashr(left_value, right_value, "result") # Sn
 
         raise NotImplementedError(f"Unsupported operator: {node.op}")
 

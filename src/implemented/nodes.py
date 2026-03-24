@@ -17,7 +17,7 @@ class Assignment(Node):
 
 class Identifier(Node):
     def __init__(self, value: str):
-        super().__init__("Identifier")
+        super().__init__("IDENTIFIER")
         self.value = value
 
 class Operatables(Node):
@@ -34,7 +34,7 @@ class Integer(Value):
 
 class Unsigned(Value):
     def __init__(self, bit: int, value: int):
-        super().__init__("UNSIGNED INTEGER")
+        super().__init__("UNSIGNED_INTEGER")
         self.bit = bit
         self.value = value
 
@@ -54,9 +54,10 @@ class Character(Value):
         super().__init__("CHARACTER")
         self.value = value
 
-class Binary(Value):
-    def __init__(self, value: str):
-        super().__init__("BINARY")
+class UnsignedInteger(Value):
+    def __init__(self, bit: int, value: int):
+        super().__init__("Unsigned_Integer")
+        self.bit = bit
         self.value = value
 
 class Byte(Value):
@@ -98,14 +99,14 @@ class Parameter(Node):
 
 class BinaryOperator(Operatables):
     def __init__(self, op: str, left: Operatables, right: Operatables):
-        super().__init__("BINARY OPERATOR")
+        super().__init__("BINARY_OPERATOR")
         self.op = op
         self.left = left
         self.right = right
 
 class UnaryOperator(Operatables):
     def __init__(self, op: str, operand: Operatables):
-        super().__init__("UNARY OPERATOR")
+        super().__init__("UNARY_OPERATOR")
         self.op = op
         self.operand = operand
 
