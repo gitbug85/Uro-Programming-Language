@@ -3,25 +3,27 @@
 ## **Purpose**
 I admire Python for it's simplicity but it is hard to transition from a language like that to a systems language, such as C. There are features in all languages that are more systems level that I think can be improved in a pythonic way, so this language aims to do that.
 
-## **Content**
+## **Resources**
 Documentation can be found [here](documentation.md).
 
 ## **Installation**
-1. Download off Github and place your folder wherever your .uro files are neighbors or children of the neighbors.
+1. Clone the repo and place your folder wherever your .uro files are neighbors or children of the neighbors.
 ```
-Valid:
-
-Desktop |-> Project
-        |-> example.uro
-        |-> Uro Files |-> first.uro
-
-Invalid:
-
-Username |-> Desktop |-> Project
-         | example.uro
+Examples:
+        
+        Valid Directory Structure:
+        
+                Desktop ├─> Uro-Programming Language
+                        ├─> example.uro
+                        └─> Uro Files ─> first.uro
+        
+        Invalid Directory Structure:
+        
+                Username ├─> Desktop ─> Uro-Programming Language
+                         └─> example.uro
 ```
-2. Project -> setups -> compiled and run whichever binary matches your OS.
-If that does not work enter Project -> setups -> nim and find the commands you need to run.
+2. Enter Uro-Programming Language -> setups -> compiled and run whichever binary matches your OS.
+If you do not have the right gcclib version right now this language is incompatable with your OS and you cannot use this language.
 
 ## **Commands**
 
