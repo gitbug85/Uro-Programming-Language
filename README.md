@@ -29,7 +29,7 @@ If you do not have the right gcclib version right now this language is incompata
 
 | Command | Description |
 |--------|-------------|
-| `uro comp -a` | Compiles all `.uro` files and outputs them to `Project -> local-cache` |
+| `uro comp -a` | Compiles all `.uro` files and outputs them to `Uro-Programming Language -> local-cache` |
 
 ## **Pull requests**
 I may accept pull requests if it helps with bugs or readablity.
