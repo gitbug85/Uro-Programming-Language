@@ -13,8 +13,10 @@ class ValueGenerator:
         
         if isinstance(node, Nd.Integer):
             return ir.Constant(self.rttypes.bits_to_int(node.bit), node.value)
-        if isinstance(node, Nd.UnsignedInteger):
-            return ir.Constant(self.rttypes.bits_to_int(node.bit), node.value)
+        if isinstance(node, Nd.Unsigned):
+            inner_node = node.value
+            if isinstance(inner_node, Nd.Integer):
+                return Nd.Unsigned(ir.Constant(self.rttypes.bits_to_int(inner_node.bit), inner_node.value))
         if isinstance(node, Nd.Boolean):
             return ir.Constant(self.rttypes.i1, node.value)
         if isinstance(node, Nd.BinaryOperator):

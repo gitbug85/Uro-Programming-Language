@@ -13,23 +13,23 @@ Examples:
         
         Valid Directory Structure:
         
-                Desktop ├─> Uro-Programming Language
+                Desktop ├─> Uro-Programming-Language
                         ├─> example.uro
                         └─> Uro Files ─> first.uro
         
         Invalid Directory Structure:
         
-                Username ├─> Desktop ─> Uro-Programming Language
+                Username ├─> Desktop ─> Uro-Programming-Language
                          └─> example.uro
 ```
-2. Enter Uro-Programming Language -> setups -> compiled and run whichever binary matches your OS.
+2. Enter Uro-Programming-Language -> setups -> compiled and run whichever binary matches your OS.
 If you do not have the right gcclib version right now this language is incompatable with your OS and you cannot use this language.
 
 ## **Commands**
 
 | Command | Description |
 |--------|-------------|
-| `uro comp -a` | Compiles all `.uro` files and outputs them to `Uro-Programming Language -> local-cache` |
+| `uro comp -a` | Compiles all `.uro` files and outputs them to `Uro-Programming-Language -> local-cache` |
 
 ## **Pull requests**
 I may accept pull requests if it helps with bugs or readablity.

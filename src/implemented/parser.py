@@ -205,7 +205,7 @@ class Parser:
             return Nd.Boolean(tok.lit)
         if tok.ty == TokTy.uintlit:
             tok = self.advance()
-            return Nd.UnsignedInteger(32, tok.lit)
+            return Nd.Unsigned(Nd.Integer(32, tok.lit))
         if tok.ty == TokTy.bytelit:
             tok = self.advance()
             return Nd.Byte(32, tok.lit)

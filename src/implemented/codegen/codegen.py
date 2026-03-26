@@ -113,6 +113,11 @@ class CodeGenerator:
         initializer_node = node.value
         ident_node = node.identifier
         value = self.get_static_value(initializer_node, ident_node)
+        signed = True
+
+        if isinstance(value, Nd.Unsigned):
+            value = value.value
+            signed = False
 
         if value is None:
             return
@@ -143,7 +148,7 @@ class CodeGenerator:
             self.main_builder.store(value, ptr)
 
             # Track the data for future reference
-            self.main_pointers[ident_node] = AssignRefData(ptr, initializer_node.name, node) # Initializer name is stored for use in signed vs unsigned integers
+            self.main_pointers[ident_node] = AssignRefData(ptr, initializer_node.name, node, signed) # Initializer name is stored for use in signed vs unsigned integers
 
     def get_static_value(self, node, name):
         return self.value_generator.make_static(

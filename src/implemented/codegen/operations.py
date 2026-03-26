@@ -9,44 +9,49 @@ class OperationGenerator:
     def genbinop(self, node: Nd.BinaryOperator, builder: ir.IRBuilder, pointers) -> ir.Value:
 
         def resolve_operand(operand):
-            if isinstance(operand, Nd.Identifier):
-                var_ptr = pointers[operand.value].ptr
+            is_signed = True
 
-                # Load the value which is either a dynamic type or a integer value
+            if isinstance(operand, Nd.Identifier):
+                ptr = pointers[operand.value]
+                var_ptr = ptr.ptr
+                signed_ptr = ptr.signed
+                is_signed = signed_ptr
+
                 dyn_struct_or_int = builder.load(var_ptr, name=f"{operand.value}.dynorintval")
                 if isinstance(dyn_struct_or_int.type, ir.IntType):
-                    return dyn_struct_or_int
+                    return dyn_struct_or_int, is_signed
 
-                # Extract the payload struct (second element of dyn_struct, index 1)
                 payload_struct = builder.extract_value(dyn_struct_or_int, 1, name=f"{operand.value}.payload")
-
-                # Extract the i32 value (third element of payload_struct, index 2)
                 val = builder.extract_value(payload_struct, 2, name=f"{operand.value}.val")
 
-                return val
+                return val, is_signed
             elif isinstance(operand, Nd.BinaryOperator):
-                return self.generate_operation(operand, builder, pointers)
+                return self.generate_operation(operand, builder, pointers), is_signed
             elif isinstance(operand, Nd.Integer):
-                return self.value_generator.make_static(operand, "sistat", pointers, builder)
-            elif isinstance(operand, Nd.UnsignedInteger):
-                return self.value_generator.make_static(operand, "uistat", pointers, builder)
+                return self.value_generator.make_static(operand, "sistat", pointers, builder), is_signed
+            elif isinstance(operand, Nd.Unsigned):
+                inner_node = operand.value
+                is_signed = False
+                return self.value_generator.make_static(inner_node, "uistat", pointers, builder), is_signed
             elif isinstance(operand, Nd.Byte):
-                return self.value_generator.make_static(operand, "sbstat", pointers, builder)
+                return self.value_generator.make_static(operand, "sbstat", pointers, builder), is_signed
 
             raise NotImplementedError(f"Unsupported operand type: {type(operand)}")
 
-        left_value = resolve_operand(node.left)
-        right_value = resolve_operand(node.right)
+        left_value, left_signed = resolve_operand(node.left)
+        right_value, right_signed = resolve_operand(node.right)
+
+        lt = self.short_type_name(left_value.type, left_signed)
+        rt = self.short_type_name(right_value.type, right_signed)
 
         ORDER = { # Rule left type wins means the type on the left is the type that the right one may convert to
-            ("si", "ui", "=="): lambda l, r: builder.icmp_signed('==', l, r, "cmp"),
-            ("ui", "si", "=="): lambda l, r: builder.icmp_unsigned('==', l, r, "cmp")
-            
+            ("si32", "ui32", "doubequal"): lambda l, r: builder.icmp_signed('==', l, r, "cmp"), # Btw this comparison is useless but not for > and <
+            ("ui32", "si32", "doubequal"): lambda l, r: builder.icmp_unsigned('==', l, r, "cmp")
         }
 
-        if left_value.type != right_value.type:
-            raise TypeError("Type mismatch in binary operation" + left_value.type.intrinsic_name + right_value.type.intrinsic_name)
-            
+        if lt != rt:
+            return ORDER[(lt, rt, node.op.name)](left_value, right_value)
+                        
         if node.op == TokTy.plus:
             return builder.add(left_value, right_value, "result") # Ag
         elif node.op == TokTy.minus:
@@ -56,7 +61,7 @@ class OperationGenerator:
         elif node.op == TokTy.divide:
             return builder.sdiv(left_value, right_value, "result") # Sn
         elif node.op == TokTy.doubequal:
-            return builder.icmp_signed('==', left_value, right_value, "cmp") # Sn
+            return builder.icmp_signed('==', left_value, right_value, "cmp")
         elif node.op == TokTy.bitwand:
             return builder.and_(left_value, right_value, "result") # Ag
         elif node.op == TokTy.bitwor:
@@ -94,4 +99,14 @@ class OperationGenerator:
                 return newval
 
         raise NotImplementedError(f"Unsupported operator: {node.op}")
+
+    from llvmlite import ir
+
+    def short_type_name(self, typ: ir.Type, signed: bool = True) -> str:
+        if isinstance(typ, ir.IntType):
+            if typ.width == 1:
+                return "b"  # boolean
+            return ("si" if signed else "ui") + str(typ.width)
+
+        return "unk"
             

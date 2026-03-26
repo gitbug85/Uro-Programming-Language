@@ -12,10 +12,11 @@ class ScopeRefData:
         self.node = node
 
 class AssignRefData(ScopeRefData):
-    def __init__(self, ptr, ty: str, node: Nd.Node):
+    def __init__(self, ptr, ty: str, node: Nd.Node, signed: bool):
         super().__init__(ptr, ty, node)
         self.attribs = node.keymods
         self.ident = node.identifier
+        self.signed = signed
 
 class DefRefData(ScopeRefData):
     def __init__(self, ptr, ty: str, node: Nd.Node):

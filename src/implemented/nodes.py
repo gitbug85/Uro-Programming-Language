@@ -33,9 +33,8 @@ class Integer(Value):
         self.value = value
 
 class Unsigned(Value):
-    def __init__(self, bit: int, value: int):
-        super().__init__("UNSIGNED_INTEGER")
-        self.bit = bit
+    def __init__(self, value: Nd.Value):
+        super().__init__("UNSIGNED")
         self.value = value
 
 class Float(Value):
@@ -52,12 +51,6 @@ class Boolean(Value):
 class Character(Value):
     def __init__(self, value: str):
         super().__init__("CHARACTER")
-        self.value = value
-
-class UnsignedInteger(Value):
-    def __init__(self, bit: int, value: int):
-        super().__init__("Unsigned_Integer")
-        self.bit = bit
         self.value = value
 
 class Byte(Value):
