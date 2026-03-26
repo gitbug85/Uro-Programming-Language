@@ -14,8 +14,11 @@ class TokTy(Enum):
     bitwor = auto()
     bitwxor = auto()
     bitwnot = auto()
-    lshift = auto()
-    rshift = auto()
+    greaterthan = auto()
+    lessthan = auto()
+    # Comparison operations
+    greaterthanorequal = auto()
+    lessthanorequal = auto()
     # Assignment operators
     equals = auto()
     # Boolean operators
@@ -72,13 +75,16 @@ class Tokenizer:
             "-": TokTy.minus,
             "*": TokTy.times,
             "/": TokTy.divide,
-            # Bitwise operations
+            # Bitwise operations (also used in other things)
             "&": TokTy.bitwand,
             "||": TokTy.bitwor,
             "|": TokTy.bitwxor,
             "!": TokTy.bitwnot,
-            "<": TokTy.lshift,
-            ">": TokTy.rshift,
+            ">": TokTy.greaterthan,
+            "<": TokTy.lessthan,
+            # Comparison operations
+            ">=": TokTy.greaterthanorequal,
+            "<=": TokTy.lessthanorequal,
             # Assignment operators
             "=": TokTy.equals,
             # Keymods
@@ -144,19 +150,31 @@ class Tokenizer:
     def tokenize(self, fl: str, data: list[tuple[str, int, int, int]]):
         tokens: list[Tok] = []
 
-        # Keep consuming until no data left
         while data:
-            lex, ln, col, leng = data.pop(0)  # Remove from front
+            lex, ln, col, leng = data.pop(0)
             tok = self.get(fl, lex, ln, col, leng)
 
             if tok.ty == TokTy.equals:
                 if data and data[0][0] == '=':
-                    next_lex, next_ln, next_col, next_leng = data.pop(0)
+                    data.pop(0)
                     tok = Tok(TokTy.doubequal, None, ln)
+
             if tok.ty == TokTy.bitwxor:
                 if data and data[0][0] == '|':
-                    next_lex, next_ln, next_col, next_leng = data.pop(0)
+                    data.pop(0)
                     tok = Tok(TokTy.bitwor, None, ln)
+
+            # NEW: >=
+            if tok.ty == TokTy.greaterthan:
+                if data and data[0][0] == '=':
+                    data.pop(0)
+                    tok = Tok(TokTy.greaterthanorequal, None, ln)
+
+            # NEW: <=
+            if tok.ty == TokTy.lessthan:
+                if data and data[0][0] == '=':
+                    data.pop(0)
+                    tok = Tok(TokTy.lessthanorequal, None, ln)
 
             tokens.append(tok)
 

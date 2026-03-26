@@ -6,9 +6,15 @@
 - Signed integer type  
 - Supports standard arithmetic operations  
 
+### `uint`
+- Unsigned integer type  
+- Supports standard arithmetic operations 
+- Declared by a `u` prefix
+
 ### `byte`
 - Signed byte type
 - Supports signed bitwise operations  
+- Declared by a `by` prefix
 
 ### `bool`
 - Boolean type (`true` / `false`)  
@@ -53,6 +59,10 @@ Macros provide shorthand for common input/output and casting operations.
 | Operator | Description |
 |----------|-------------|
 | `==` | Equality comparison |
+| `>=` | Greater than or equal to comparison |
+| `<=` | Less than or equal to comparison |
+| `>` | Greater than comparison |
+| `<` | Less than comparison |
 | `=` | Assignment |
 
 ---

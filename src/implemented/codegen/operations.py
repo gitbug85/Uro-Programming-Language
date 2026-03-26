@@ -45,8 +45,16 @@ class OperationGenerator:
         rt = self.short_type_name(right_value.type, right_signed)
 
         ORDER = { # Rule left type wins means the type on the left is the type that the right one may convert to
-            ("si32", "ui32", "doubequal"): lambda l, r: builder.icmp_signed('==', l, r, "cmp"), # Btw this comparison is useless but not for > and <
-            ("ui32", "si32", "doubequal"): lambda l, r: builder.icmp_unsigned('==', l, r, "cmp")
+            ("si32", "ui32", "doubequal"): lambda l, r: builder.icmp_signed('==', l, r, "cmp"), # Btw this comparison is useless but not for >, <, >=, <=
+            ("ui32", "si32", "doubequal"): lambda l, r: builder.icmp_unsigned('==', l, r, "cmp"),
+            ("si32", "ui32", "greaterthan"): lambda l, r: builder.icmp_signed('>', l, r, "cmp"),
+            ("ui32", "si32", "greaterthan"): lambda l, r: builder.icmp_unsigned('>', l, r, "cmp"),
+            ("si32", "ui32", "lessthan"): lambda l, r: builder.icmp_signed('<', l, r, "cmp"),
+            ("ui32", "si32", "lessthan"): lambda l, r: builder.icmp_unsigned('<', l, r, "cmp"),
+            ("si32", "ui32", "greaterthanorequal"): lambda l, r: builder.icmp_signed('>=', l, r, "cmp"),
+            ("ui32", "si32", "greaterthanorequal"): lambda l, r: builder.icmp_unsigned('>=', l, r, "cmp"),
+            ("si32", "ui32", "lessthanorequal"): lambda l, r: builder.icmp_signed('<=', l, r, "cmp"),
+            ("ui32", "si32", "lessthanorequal"): lambda l, r: builder.icmp_unsigned('<=', l, r, "cmp"),
         }
 
         if lt != rt:
@@ -62,6 +70,14 @@ class OperationGenerator:
             return builder.sdiv(left_value, right_value, "result") # Sn
         elif node.op == TokTy.doubequal:
             return builder.icmp_signed('==', left_value, right_value, "cmp")
+        elif node.op == TokTy.greaterthan:
+            return builder.icmp_signed('>', left_value, right_value, "cmp")
+        elif node.op == TokTy.lessthan:
+            return builder.icmp_signed('<', left_value, right_value, "cmp")
+        elif node.op == TokTy.greaterthanorequal:
+            return builder.icmp_signed('>=', left_value, right_value, "cmp")
+        elif node.op == TokTy.lessthanorequal:
+            return builder.icmp_signed('<=', left_value, right_value, "cmp")
         elif node.op == TokTy.bitwand:
             return builder.and_(left_value, right_value, "result") # Ag
         elif node.op == TokTy.bitwor:
@@ -70,9 +86,9 @@ class OperationGenerator:
             return builder.xor(left_value, right_value, "result") # Ag
         elif node.op == TokTy.bitwnot:
             return builder.not_(left_value, "result") # Ag
-        elif node.op == TokTy.lshift:
+        elif node.op == TokTy.lessthan:
             return builder.shl(left_value, right_value, "result") # Ag
-        elif node.op == TokTy.rshift:
+        elif node.op == TokTy.greaterthan:
             return builder.ashr(left_value, right_value, "result") # Sn
 
         raise NotImplementedError(f"Unsupported operator: {node.op}")

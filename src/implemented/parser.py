@@ -15,8 +15,10 @@ class Parser:
             TokTy.bitwor: 5,
             TokTy.bitwxor: 6,
             TokTy.bitwnot: 7,
-            TokTy.lshift: 8,
-            TokTy.rshift: 9,
+            TokTy.greaterthan: 8,
+            TokTy.lessthan: 9,
+            TokTy.greaterthanorequal: 10,
+            TokTy.lessthanorequal: 11,
         }
 
     def get_ast(self, file_name):

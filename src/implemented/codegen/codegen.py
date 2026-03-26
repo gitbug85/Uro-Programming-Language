@@ -88,10 +88,10 @@ class CodeGenerator:
             if isinstance(node, Nd.Macro):
                 if node.identifier.value == "_byte":
                     if len(node.arguments) == 1:
-                        self.main_pointers[node.arguments[0].value][1] = Nd.Byte("0", "0").name
+                        self.main_pointers[node.arguments[0].value].ident = Nd.Byte("0", "0").name
                 if node.identifier.value == "_int":
                     if len(node.arguments) == 1:
-                        self.main_pointers[node.arguments[0].value][1] = Nd.Integer(32, 0).name
+                        self.main_pointers[node.arguments[0].value].ident = Nd.Integer(32, 0).name
                 if node.identifier.value == "_read":
                     if len(node.arguments) == 1:
                         val = self.main_builder.call(self.built_in_builder.read_byte, [])
